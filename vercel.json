@@ -3,7 +3,7 @@
     { "src": "index.py", "use": "@vercel/python" }
   ],
   "routes": [
-    { "src": "/login(.*)", "dest": "index.py" }
+    { "src": "/(.*)", "dest": "index.py" }
   ],
   "regions": ["bom1"]
 }
