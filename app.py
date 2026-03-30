@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonifyfrom flask import Flask, request, jsonify
+from flask import Flask, request, jsonify
 import asyncio
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
