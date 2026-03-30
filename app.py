@@ -12,23 +12,8 @@ import like_count_pb2
 import uid_generator_pb2
 from google.protobuf.message import DecodeError
 import base64
-import time
-import hashlib
 
 app = Flask(__name__)
-
-# 🔐 SECRET (same as your bot)
-SECRET = "mysecret123"
-
-# 🔐 Generate valid passwords (current + previous minute)
-def valid_passwords():
-    now = int(time.time() // 60)
-    passwords = []
-    for t in [now, now - 1]:
-        raw = SECRET + str(t)
-        passwords.append(hashlib.sha256(raw.encode()).hexdigest()[:6])
-    return passwords
-
 
 def load_tokens():
     try:
@@ -68,13 +53,24 @@ async def send_request(encrypted_uid, token, url):
     try:
         edata = bytes.fromhex(encrypted_uid)
         headers = {
-            'User-Agent': "Dalvik/2.1.0",
+            'User-Agent': "Dalvik/2.1.0 (Linux; U; Android 9; ASUS_Z01QD Build/PI)",
+            'Connection': "Keep-Alive",
+            'Accept-Encoding': "gzip",
             'Authorization': f"Bearer {token}",
-            'Content-Type': "application/x-www-form-urlencoded"
+            'Content-Type': "application/x-www-form-urlencoded",
+            'Expect': "100-continue",
+            'X-Unity-Version': "2018.4.11f1",
+            'X-GA': "v1 1",
+            'ReleaseVersion': "OB52"
         }
+
         async with aiohttp.ClientSession() as session:
             async with session.post(url, data=edata, headers=headers) as response:
+                if response.status != 200:
+                    app.logger.error(f"Request failed: {response.status}")
+                    return response.status
                 return await response.text()
+
     except Exception as e:
         app.logger.error(f"Exception in send_request: {e}")
         return None
@@ -86,15 +82,16 @@ async def send_multiple_requests(uid, server_name, url):
         encrypted_uid = encrypt_message(protobuf_message)
 
         tokens = load_tokens()
-        if not tokens:
+        if tokens is None:
             return None
 
         tasks = []
         for i in range(100):
-            token = tokens[i % len(tokens)]  # ✅ FIXED FORMAT
+            token = tokens[i % len(tokens)]["token"]
             tasks.append(send_request(encrypted_uid, token, url))
 
-        return await asyncio.gather(*tasks)
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
     except Exception as e:
         app.logger.error(f"Exception: {e}")
         return None
@@ -131,23 +128,25 @@ def make_request(encrypt, server_name, token):
         items = like_count_pb2.Info()
         items.ParseFromString(binary)
         return items
+
     except Exception as e:
         app.logger.error(f"Error: {e}")
         return None
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        "credit": "https://t.me/paglu_dev",
+        "message": "Welcome to the Free Fire Like API",
+        "status": "API is running"
+    })
+
+
 @app.route('/like', methods=['GET'])
 def handle_requests():
-
-    # 🔐 PASSWORD CHECK
-    user_pass = request.args.get("password")
-    if not user_pass or user_pass not in valid_passwords():
-        return jsonify({
-            "status": 0,
-            "message": "Invalid or missing password"
-        }), 403
-
     uid = request.args.get("uid")
+
     if not uid:
         return jsonify({"error": "UID is required"}), 400
 
@@ -156,9 +155,8 @@ def handle_requests():
         if not tokens:
             return jsonify({"error": "No tokens found"}), 500
 
-        token = tokens[0]
+        token = tokens[0]['token']
 
-        # Detect region
         payload = token.split('.')[1]
         payload += '=' * (-len(payload) % 4)
         decoded = json.loads(base64.urlsafe_b64decode(payload))
@@ -170,7 +168,6 @@ def handle_requests():
         data_before = json.loads(MessageToJson(before))
         before_like = int(data_before.get('AccountInfo', {}).get('Likes', 0))
 
-        # Send likes
         if server_name == "IND":
             url = "https://client.ind.freefiremobile.com/LikeProfile"
         else:
