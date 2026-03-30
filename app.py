@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import asyncio
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
@@ -13,8 +13,12 @@ import uid_generator_pb2
 from google.protobuf.message import DecodeError
 import base64
 
+# Serverless bridge
+from serverless_wsgi import handle_request
+
 app = Flask(__name__)
 
+# ---------------- Utilities ---------------- #
 def load_tokens():
     try:
         with open("tokens.json", "r") as f:
@@ -155,16 +159,10 @@ def decode_protobuf(binary):
         app.logger.error(f"Unexpected error during protobuf decoding: {e}")
         return None
 
+# ---------------- Routes ---------------- #
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({
-        "credit": "https://www.youtube.com/@Creator.9XED",
-        "message": "Welcome to the Free Fire Like API",
-        "status": "API is running",
-        "endpoints": "/like?uid=<uid> or /like?uid=<uid>&server_name=<server_name>",
-        "example": "/like?uid=123456789 or /like?uid=123456789&server_name=bd"
-})
-
+    return render_template("index.html")  # your UI
 
 @app.route('/like', methods=['GET'])
 def handle_requests():
@@ -178,7 +176,7 @@ def handle_requests():
             return jsonify({"error": "Failed to load tokens."}), 500
         token = tokens[0]['token']
         
-        # Extract server_name (lock_region) from token if not provided
+        # Extract server_name from token if not provided
         server_name = request.args.get("server_name", "").upper()
         if not server_name:
             try:
@@ -191,20 +189,18 @@ def handle_requests():
                 app.logger.error(f"Error decoding token payload: {e}")
         
         if not server_name:
-            return jsonify({"error": "server_name could not be determined from token or input"}), 400
+            return jsonify({"error": "server_name could not be determined"}), 400
         
         encrypted_uid = enc(uid)
         if encrypted_uid is None:
             return jsonify({"error": "Encryption of UID failed."}), 500
 
-        # Get before likes count
+        # Likes before
         before = make_request(encrypted_uid, server_name, token)
         if before is None:
-            return jsonify({"error": "Failed to retrieve player info. There are no valid token found! please update tokens.json with valid tokens"}), 500
-        
+            return jsonify({"error": "Failed to retrieve player info before likes"}), 500
         data_before = json.loads(MessageToJson(before))
         before_like = int(data_before.get('AccountInfo', {}).get('Likes', 0) or 0)
-        app.logger.info(f"Likes before: {before_like}")
 
         # Determine URL based on server
         if server_name == "IND":
@@ -214,15 +210,13 @@ def handle_requests():
         else:
             url = "https://clientbp.ggpolarbear.com/LikeProfile"
 
-        # Send like requests
+        # Send likes
         requests_sent = asyncio.run(send_multiple_requests(uid, server_name, url))
-        app.logger.info(f"Requests sent: {requests_sent}")
 
-        # Get after likes count
+        # Likes after
         after = make_request(encrypted_uid, server_name, token)
         if after is None:
-            return jsonify({"error": "Failed to retrieve player info after likes."}), 500
-        
+            return jsonify({"error": "Failed to retrieve player info after likes"}), 500
         data_after = json.loads(MessageToJson(after))
         account_info = data_after.get('AccountInfo', {})
         after_like = int(account_info.get('Likes', 0) or 0)
@@ -245,5 +239,6 @@ def handle_requests():
         app.logger.error(f"Error processing request: {e}")
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+# ---------------- Vercel Handler ---------------- #
+def handler(event, context):
+    return handle_request(app, event, context)
