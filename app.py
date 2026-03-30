@@ -1,9 +1,4 @@
-from flask import Flask, request, jsonifyfrom flask import Flask, request, jsonify, render_template
-# keep all your existing imports and code
-
-@app.route('/', methods=['GET'])
-def index():
-    return render_template("index.html")
+from flask import Flask, request, jsonifyfrom flask import Flask, request, jsonify
 import asyncio
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
