@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify, render_template
-# ... rest of your imports ...
+from flask import Flask, request, jsonifyfrom flask import Flask, request, jsonify, render_template
+# keep all your existing imports and code
 
 @app.route('/', methods=['GET'])
 def index():
