@@ -55,46 +55,13 @@ header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600
 .like-form button:hover::before { left: 140%; }
 .like-form button span { position: relative; z-index: 1; }
 
-/* Likes Panel (Result Card) */
+/* Result Card */
 .result-card { 
-    display:flex; justify-content:center; align-items:center; 
+    margin-top:30px; 
+    background: rgba(255,255,255,0.1); padding:20px; border-radius:20px; 
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.1); font-size:14px; color:#fff; white-space:pre-wrap; 
     opacity:0; transform: scale(0.8);
     transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
-    width:100%;
-}
-.likes-panel {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 20px 30px;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    animation: fadeInScale 0.8s ease forwards;
-}
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* Animated text inside likes panel */
-.animated-like {
-    font-size: 16px;
-    color: #00e0ff;
-    margin: 5px 0;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: textFadeIn 1s ease forwards;
-}
-.animated-like:nth-child(1) { animation-delay: 0.1s; }
-.animated-like:nth-child(2) { animation-delay: 0.2s; }
-.animated-like:nth-child(3) { animation-delay: 0.3s; }
-.animated-like:nth-child(4) { animation-delay: 0.4s; }
-.animated-like:nth-child(5) { animation-delay: 0.5s; }
-.animated-like:nth-child(6) { animation-delay: 0.6s; }
-@keyframes textFadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Footer */
@@ -111,6 +78,7 @@ footer a { color:#00d0ff; text-decoration:none; }
     0% { transform: translateY(0) rotate(0deg); opacity:1; }
     100% { transform: translateY(800px) rotate(360deg); opacity:0; }
 }
+
 </style>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5847508068424077"
@@ -129,16 +97,7 @@ footer a { color:#00d0ff; text-decoration:none; }
             <button type="submit"><span>Send Likes</span></button>
         </form>
 
-        <div id="result" class="result-card">
-            <div class="likes-panel">
-                <p class="animated-like">✅ Likes Given: 0</p>
-                <p class="animated-like">Before: 2772</p>
-                <p class="animated-like">After: 2772</p>
-                <p class="animated-like">Player: DL SUMIT</p>
-                <p class="animated-like">Region: IND</p>
-                <p class="animated-like">UID: 3217919081</p>
-            </div>
-        </div>
+        <div id="result" class="result-card"></div>
     </main>
     <footer>
         <p>Made by <a href="https://www.youtube.com/@Creator.9XED" target="_blank">Creator.9XED</a></p>
@@ -148,7 +107,6 @@ footer a { color:#00d0ff; text-decoration:none; }
 <script>
 const form = document.getElementById("likeForm");
 const resultDiv = document.getElementById("result");
-const likesPanel = resultDiv.querySelector('.likes-panel');
 
 // Function to create confetti particles
 function createConfetti(count=30){
@@ -175,9 +133,8 @@ form.addEventListener("submit", async (e) => {
     form.style.transform = 'translateY(-50px) scale(0.9)';
     form.style.opacity = '0';
 
-    // Show likes panel
-    resultDiv.style.opacity = '1';
-    resultDiv.style.transform = 'scale(1)';
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = "Processing...";
 
     try {
         const res = await fetch(url);
@@ -186,25 +143,26 @@ form.addEventListener("submit", async (e) => {
         if(data.error){
             content = `❌ Error: ${data.error}`;
         } else {
-            // Update likes panel dynamically
-            likesPanel.innerHTML = `
-                <p class="animated-like">✅ Likes Given: ${data.LikesGivenByAPI}</p>
-                <p class="animated-like">Before: ${data.LikesbeforeCommand}</p>
-                <p class="animated-like">After: ${data.LikesafterCommand}</p>
-                <p class="animated-like">Player: ${data.PlayerNickname}</p>
-                <p class="animated-like">Region: ${data.Region}</p>
-                <p class="animated-like">UID: ${data.UID}</p>
-            `;
-            // Animate text lines
-            likesPanel.querySelectorAll('.animated-like').forEach((el,i)=>{
-                el.style.animation = `textFadeIn 1s ease forwards`;
-                el.style.animationDelay = `${i*0.1}s`;
-            });
+            content = `✅ Likes Given: ${data.LikesGivenByAPI}\n` +
+                      `Before: ${data.LikesbeforeCommand}\n` +
+                      `After: ${data.LikesafterCommand}\n` +
+                      `Player: ${data.PlayerNickname}\n` +
+                      `Region: ${data.Region}\n` +
+                      `UID: ${data.UID}`;
         }
+        resultDiv.innerHTML = content;
 
+        // Animate result card in
+        setTimeout(()=>{
+            resultDiv.style.opacity = '1';
+            resultDiv.style.transform = 'scale(1)';
+        }, 300);
+
+        // Fire confetti
         createConfetti(50);
+
     } catch (err) {
-        likesPanel.innerHTML = `<p class="animated-like">❌ Error: ${err.message}</p>`;
+        resultDiv.innerHTML = "❌ Error: " + err.message;
         createConfetti(20);
     }
 });
