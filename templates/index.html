@@ -23,6 +23,7 @@ body::before {
     background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); 
     max-width:600px; width:100%; border-radius:25px; 
     box-shadow:0 20px 40px rgba(0,0,0,0.2); padding:40px; transition:all 0.5s ease; 
+    position: relative;
 }
 
 /* Header animations */
@@ -57,11 +58,12 @@ header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600
 
 /* Result Card */
 .result-card { 
-    margin-top:30px; 
+    margin-top:20px; 
     background: rgba(255,255,255,0.1); padding:20px; border-radius:20px; 
     box-shadow: inset 0 5px 10px rgba(0,0,0,0.1); font-size:14px; color:#fff; white-space:pre-wrap; 
     opacity:0; transform: scale(0.8);
-    transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
+    min-height: 120px; /* reserve space to prevent container jump */
+    transition: all 0.7s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 /* Footer */
@@ -78,7 +80,6 @@ footer a { color:#00d0ff; text-decoration:none; }
     0% { transform: translateY(0) rotate(0deg); opacity:1; }
     100% { transform: translateY(800px) rotate(360deg); opacity:0; }
 }
-
 </style>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5847508068424077"
@@ -130,8 +131,8 @@ form.addEventListener("submit", async (e) => {
 
     // Animate form out
     form.style.transition = 'all 0.4s ease-in-out';
-    form.style.transform = 'translateY(0px) scale(0)';
-    form.style.opacity = '0';
+    form.style.transform = 'translateY(-20px) scale(0.95)';
+    form.style.opacity = '0.5';
 
     resultDiv.style.display = "block";
     resultDiv.innerHTML = "Processing...";
@@ -143,12 +144,7 @@ form.addEventListener("submit", async (e) => {
         if(data.error){
             content = `❌ Error: ${data.error}`;
         } else {
-            content = `✅ Likes Given: ${data.LikesGivenByAPI}\n` +
-                      `Before: ${data.LikesbeforeCommand}\n` +
-                      `After: ${data.LikesafterCommand}\n` +
-                      `Player: ${data.PlayerNickname}\n` +
-                      `Region: ${data.Region}\n` +
-                      `UID: ${data.UID}`;
+            content = `✅ Likes Given: ${data.LikesGivenByAPI}\nBefore: ${data.LikesbeforeCommand}\nAfter: ${data.LikesafterCommand}\nPlayer: ${data.PlayerNickname}\nRegion: ${data.Region}\nUID: ${data.UID}`;
         }
         resultDiv.innerHTML = content;
 
