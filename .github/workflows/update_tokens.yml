@@ -3,7 +3,7 @@ name: Update Tokens
 
 on:
   schedule:
-    - cron: '0 */7 * * *'  # প্রতি ৭ ঘণ্টা পরপর
+    - cron: '0 */01 * * *'  # প্রতি ৭ ঘণ্টা পরপর
   workflow_dispatch:  # ম্যানুয়ালি রান করার অপশন
 
 jobs:
