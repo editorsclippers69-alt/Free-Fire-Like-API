@@ -58,8 +58,8 @@ header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600
 /* Likes Panel (Result Card) */
 .result-card { 
     display:flex; justify-content:center; align-items:center; 
-    opacity:0; transform: scale(0.8);
-    transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
+    opacity:100; transform: scale(0.8);
+    transition: all 1s cubic-bezier(.68,-00.55,.27,1.55);
     width:100%;
 }
 .likes-panel {
@@ -84,14 +84,14 @@ header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600
     margin: 5px 0;
     opacity: 0;
     transform: translateY(10px);
-    animation: textFadeIn 1s ease forwards;
+    animation: textFadeIn 0s ease forwards;
 }
-.animated-like:nth-child(1) { animation-delay: 0.1s; }
-.animated-like:nth-child(2) { animation-delay: 0.2s; }
-.animated-like:nth-child(3) { animation-delay: 0.3s; }
-.animated-like:nth-child(4) { animation-delay: 0.4s; }
-.animated-like:nth-child(5) { animation-delay: 0.5s; }
-.animated-like:nth-child(6) { animation-delay: 0.6s; }
+.animated-like:nth-child(1) { animation-delay: 0.3s; }
+.animated-like:nth-child(2) { animation-delay: 0.4s; }
+.animated-like:nth-child(3) { animation-delay: 0.5s; }
+.animated-like:nth-child(4) { animation-delay: 0.6s; }
+.animated-like:nth-child(5) { animation-delay: 0.7s; }
+.animated-like:nth-child(6) { animation-delay: 0.8s; }
 @keyframes textFadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
