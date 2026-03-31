@@ -4,168 +4,254 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Fire Likes</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-/* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-body { min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; position: relative; overflow:hidden; color:#fff; }
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
 
-/* Dark Blue Gradient Animated BG */
+body {
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  overflow:hidden;
+  color:#fff;
+  position:relative;
+}
+
+/* Background */
 body::before {
-    content:""; position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2;
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:-2;
     background: linear-gradient(45deg,#001f3f,#003366,#004080,#0059b3,#001a66,#00264d);
-    background-size:600% 600%; animation:bgAnimate 30s ease infinite;
+    background-size:600% 600%;
+    animation:bgAnimate 30s ease infinite;
 }
-@keyframes bgAnimate { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+@keyframes bgAnimate {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-/* Glass Container */
+/* Main Container FIXED SIZE */
 .app-container { 
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); 
-    max-width:600px; width:100%; border-radius:25px; 
-    box-shadow:0 20px 40px rgba(0,0,0,0.2); padding:40px; transition:all 0.5s ease; 
+    position: relative;
+    height: 420px;
+    max-width:600px;
+    width:100%;
+    padding:40px;
+    border-radius:25px;
+
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(25px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
+
+    overflow:hidden;
 }
 
-/* Header animations */
-header h1 { text-align:center; font-size:2rem; font-weight:700; color:#00d0ff; animation:fadeInUp 1s ease forwards;}
-header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600; animation:fadeInUp 1.3s ease forwards;}
-@keyframes fadeInUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform:translateY(0);} }
-
-/* Form Inputs */
-.like-form input { 
-    width:100%; padding:15px; margin-bottom:20px; border:none; border-radius:15px; 
-    background: rgba(255,255,255,0.15); font-size:16px; transition:0.3s; backdrop-filter: blur(10px); color:#fff;
+/* Header */
+header h1 {
+  text-align:center;
+  font-size:2rem;
+  color:#00d0ff;
+  animation:fadeInUp 1s ease forwards;
 }
-.like-form input::placeholder { color: rgba(255,255,255,0.6); }
-.like-form input:focus { outline:none; background: rgba(255,255,255,0.25); }
-
-/* Apple Glass Button with Slow Light Sweep */
-.like-form button { 
-    position: relative; display:inline-block;
-    width:100%; padding:15px; border:none; border-radius:15px; 
-    background: rgba(255,255,255,0.1); color:White; font-size:16px; cursor:pointer; 
-    overflow:hidden; backdrop-filter: blur(15px); transition: 0.9s ease; font-weight:600;
+header p {
+  text-align:center;
+  color:#a0dfff;
+  margin-bottom:30px;
+  font-weight:600;
+  animation:fadeInUp 1.3s ease forwards;
 }
+@keyframes fadeInUp {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+/* Form */
+.like-form input {
+    width:100%;
+    padding:15px;
+    margin-bottom:20px;
+    border:none;
+    border-radius:15px;
+    background: rgba(255,255,255,0.15);
+    color:#fff;
+}
+.like-form input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+.like-form input:focus {
+    outline:none;
+    background: rgba(255,255,255,0.25);
+}
+
+/* Button */
+.like-form button {
+    position:relative;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background: rgba(255,255,255,0.1);
+    color:white;
+    cursor:pointer;
+    overflow:hidden;
+    backdrop-filter: blur(15px);
+}
+
+/* Light sweep */
 .like-form button::before {
-    content: '';
-    position: absolute; top:0; left:-100%; width:60%; height:100%;
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:60%;
+    height:100%;
     background: rgba(255,255,255,0.25);
     transform: skewX(20deg);
     transition: left 0.8s ease;
 }
-.like-form button:hover::before { left: 140%; }
-.like-form button span { position: relative; z-index: 1; }
+.like-form button:hover::before {
+    left:140%;
+}
 
-/* Result Card */
+/* RESULT CARD CENTERED */
 .result-card { 
-    margin-top:10px; 
-    background: rgba(255,255,255,0.1); padding:20px; border-radius:20px; 
-    box-shadow: inset 0 5px 10px rgba(0,0,0,0.1); font-size:14px; color:#fff; white-space:pre-wrap; 
-    opacity:0; transform: scale(0.8);
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%) scale(0.8);
+
+    width:85%;
+    padding:20px;
+    border-radius:20px;
+
+    background: rgba(255,255,255,0.1);
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.1);
+
+    font-size:14px;
+    white-space: pre-wrap;
+
+    opacity:0;
     transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 /* Footer */
-footer { text-align:center; margin-top:30px; color:#8e8e93; }
+footer {
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+    color:#8e8e93;
+}
 footer a { color:#00d0ff; text-decoration:none; }
 
-/* Confetti Particles */
+/* Confetti */
 .confetti {
-    position:fixed; top:0; left:50%; width:10px; height:10px;
-    background: #00d0ff; opacity:100; pointer-events:none; z-index:10;
+    position:fixed;
+    top:0;
+    left:50%;
+    width:10px;
+    height:10px;
+    pointer-events:none;
     animation:fall 4s linear forwards;
 }
 @keyframes fall {
     0% { transform: translateY(0) rotate(0deg); opacity:1; }
     100% { transform: translateY(800px) rotate(360deg); opacity:0; }
 }
-
 </style>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5847508068424077"
- crossorigin="anonymous"></script>
 </head>
-<body>
-<div class="app-container">
-    <header>
-        <h1>🔥 Free Fire Likes</h1>
-        <p>💎 VIP 💎 <span class="animated-text">✨ Boost Your Likes! ✨</span></p>
-    </header>
-    <main>
-        <form id="likeForm" class="like-form">
-            <input type="text" id="uid" name="uid" placeholder="Enter Free fire UID" required>
-            <input type="text" id="server_name" name="server_name" placeholder="Server Name (IND, US, BR...)">
-            <button type="submit"><span>Send Likes</span></button>
-        </form>
 
-        <div id="result" class="result-card"></div>
-    </main>
-    <footer>
-        <p>Made by <a href="https://www.youtube.com/@Creator.9XED" target="_blank">Creator.9XED</a></p>
-    </footer>
+<body>
+
+<div class="app-container">
+
+<header>
+    <h1>🔥 Free Fire Likes</h1>
+    <p>💎 VIP 💎 ✨ Boost Your Likes! ✨</p>
+</header>
+
+<form id="likeForm" class="like-form">
+    <input type="text" id="uid" placeholder="Enter Free fire UID" required>
+    <input type="text" id="server_name" placeholder="Server Name (IND, US, BR...)">
+    <button type="submit">Send Likes</button>
+</form>
+
+<div id="result" class="result-card"></div>
+
+<footer>
+    Made by <a href="#">Creator.9XED</a>
+</footer>
+
 </div>
 
 <script>
 const form = document.getElementById("likeForm");
 const resultDiv = document.getElementById("result");
 
-// Function to create confetti particles
-function createConfetti(count=90){
+/* Confetti */
+function createConfetti(count=60){
     for(let i=0;i<count;i++){
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.left = Math.random()*100 + 'vw';
-        confetti.style.background = `hsl(${Math.random()*360},80%,60%)`;
-        confetti.style.animationDuration = 2 + Math.random()*1.5 + 's';
-        document.body.appendChild(confetti);
-        setTimeout(()=>{ confetti.remove(); }, 3000);
+        const c = document.createElement('div');
+        c.classList.add('confetti');
+        c.style.left = Math.random()*100 + 'vw';
+        c.style.background = `hsl(${Math.random()*360},80%,60%)`;
+        c.style.animationDuration = 2 + Math.random()*1.5 + 's';
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),3000);
     }
 }
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async (e)=>{
     e.preventDefault();
+
     const uid = document.getElementById("uid").value;
-    const server_name = document.getElementById("server_name").value;
+    const server = document.getElementById("server_name").value;
+
     let url = `/like?uid=${uid}`;
-    if (server_name) url += `&server_name=${server_name}`;
+    if(server) url += `&server_name=${server}`;
 
-    // Animate form out
-    form.style.transition = 'all 0.4s ease-in-out';
-    form.style.transform = 'translateY(0px) scale(0)';
-    form.style.opacity = '0';
+    /* Hide form without resizing */
+    form.style.visibility = "hidden";
+    form.style.position = "absolute";
 
-    resultDiv.style.display = "block";
     resultDiv.innerHTML = "Processing...";
 
     try {
         const res = await fetch(url);
         const data = await res.json();
-        let content = "";
-        if(data.error){
-            content = `❌ Error: ${data.error}`;
-        } else {
-            content = `✅ Likes Given: ${data.LikesGivenByAPI}\n` +
-                      `Before: ${data.LikesbeforeCommand}\n` +
-                      `After: ${data.LikesafterCommand}\n` +
-                      `Player: ${data.PlayerNickname}\n` +
-                      `Region: ${data.Region}\n` +
-                      `UID: ${data.UID}`;
-        }
+
+        let content = data.error
+            ? `❌ Error: ${data.error}`
+            : `✅ Likes Given: ${data.LikesGivenByAPI}
+Before: ${data.LikesbeforeCommand}
+After: ${data.LikesafterCommand}
+Player: ${data.PlayerNickname}
+Region: ${data.Region}
+UID: ${data.UID}`;
+
         resultDiv.innerHTML = content;
 
-        // Animate result card in
         setTimeout(()=>{
-            resultDiv.style.opacity = '1';
-            resultDiv.style.transform = 'scale(1)';
-        }, 300);
+            resultDiv.style.opacity = "1";
+            resultDiv.style.transform = "translate(-50%, -50%) scale(1)";
+        },200);
 
-        // Fire confetti
-        createConfetti(50);
+        createConfetti();
 
-    } catch (err) {
+    } catch(err){
         resultDiv.innerHTML = "❌ Error: " + err.message;
         createConfetti(20);
     }
 });
 </script>
+
 </body>
 </html>
