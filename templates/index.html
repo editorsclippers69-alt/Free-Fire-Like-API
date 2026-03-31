@@ -8,52 +8,96 @@
 <style>
 /* Reset & Base */
 * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-body { background: linear-gradient(135deg,#f0f0f5,#dfe4f7); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
-.app-container { background:#fff; max-width:600px; width:100%; border-radius:25px; box-shadow:0 20px 40px rgba(0,0,0,0.1); padding:40px; transition:all 0.3s ease; }
-header h1 { text-align:center; font-size:2rem; font-weight:700; color:#1d1d1f; animation:fadeIn 1s ease; }
-header p { text-align:center; color:#6e6e73; margin-bottom:30px; animation:fadeIn 1.2s ease; }
+body { min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; position: relative; overflow:hidden; color:#fff; }
 
-/* Form */
-.like-form input { width:100%; padding:15px; margin-bottom:20px; border:none; border-radius:15px; background:#f2f2f7; font-size:16px; transition:0.3s; }
-.like-form input:focus { outline:none; background:#e0e0f0; }
-.like-form button { width:100%; padding:15px; border:none; border-radius:15px; background:linear-gradient(135deg,#ff9500,#ff5e3a); color:white; font-size:16px; cursor:pointer; transition:0.3s; }
-.like-form button:hover { background:linear-gradient(135deg,#ff5e3a,#ff9500); }
+/* Dark Blue Gradient Animated BG */
+body::before {
+    content:""; position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2;
+    background: linear-gradient(45deg,#001f3f,#003366,#004080,#0059b3,#001a66,#00264d);
+    background-size:600% 600%; animation:bgAnimate 30s ease infinite;
+}
+@keyframes bgAnimate { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+
+/* Glass Container */
+.app-container { 
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(25px); 
+    max-width:600px; width:100%; border-radius:25px; 
+    box-shadow:0 20px 40px rgba(0,0,0,0.2); padding:40px; transition:all 0.5s ease; 
+}
+
+/* Header animations */
+header h1 { text-align:center; font-size:2rem; font-weight:700; color:#00d0ff; animation:fadeInUp 1s ease forwards;}
+header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600; animation:fadeInUp 1.3s ease forwards;}
+@keyframes fadeInUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+/* Form Inputs */
+.like-form input { 
+    width:100%; padding:15px; margin-bottom:20px; border:none; border-radius:15px; 
+    background: rgba(255,255,255,0.15); font-size:16px; transition:0.3s; backdrop-filter: blur(10px); color:#fff;
+}
+.like-form input::placeholder { color: rgba(255,255,255,0.6); }
+.like-form input:focus { outline:none; background: rgba(255,255,255,0.25); }
+
+/* Apple Glass Button with Slow Light Sweep */
+.like-form button { 
+    position: relative; display:inline-block;
+    width:100%; padding:15px; border:none; border-radius:15px; 
+    background: rgba(255,255,255,0.1); color:white; font-size:16px; cursor:pointer; 
+    overflow:hidden; backdrop-filter: blur(15px); transition: 0.3s ease; font-weight:600;
+}
+.like-form button::before {
+    content: '';
+    position: absolute; top:0; left:-100%; width:60%; height:100%;
+    background: rgba(255,255,255,0.25);
+    transform: skewX(-20deg);
+    transition: left 1.5s ease;
+}
+.like-form button:hover::before { left: 140%; }
+.like-form button span { position: relative; z-index: 1; }
 
 /* Result Card */
-.result-card { margin-top:30px; background:rgba(242,242,247,0.9); padding:20px; border-radius:20px; box-shadow: inset 0 5px 10px rgba(0,0,0,0.05); font-size:14px; color:#1d1d1f; white-space:pre-wrap; animation:fadeIn 0.5s ease; }
+.result-card { 
+    margin-top:30px; 
+    background: rgba(255,255,255,0.1); padding:20px; border-radius:20px; 
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.1); font-size:14px; color:#fff; white-space:pre-wrap; 
+    opacity:0; transform: scale(0.8);
+    transition: all 1s cubic-bezier(.68,-0.55,.27,1.55);
+}
 
 /* Footer */
 footer { text-align:center; margin-top:30px; color:#8e8e93; }
-footer a { color:#007aff; text-decoration:none; }
+footer a { color:#00d0ff; text-decoration:none; }
 
-/* Animations */
-@keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-
-/* Glassmorphism & Gradient Animated BG */
-body::before {
-    content:""; position:fixed; top:0; left:0; width:100%; height:100%;
-    background: linear-gradient(45deg,#ff9500,#ff5e3a,#ff2d55,#5856d6,#5ac8fa,#34c759);
-    background-size:600% 600%; z-index:-1; animation:bgAnimate 20s ease infinite;
+/* Confetti Particles */
+.confetti {
+    position:fixed; top:0; left:50%; width:10px; height:10px;
+    background: #00d0ff; opacity:0.9; pointer-events:none; z-index:10;
+    animation:fall 2s linear forwards;
 }
-@keyframes bgAnimate { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+@keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity:1; }
+    100% { transform: translateY(800px) rotate(360deg); opacity:0; }
+}
+
 </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5847508068424077"
-     crossorigin="anonymous"></script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5847508068424077"
+ crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="app-container">
     <header>
         <h1>🔥 Free Fire Likes</h1>
-        <p> 💎VIP💎 </p>
+        <p>💎 VIP 💎 <span class="animated-text">✨ Boost Your Likes! ✨</span></p>
     </header>
     <main>
         <form id="likeForm" class="like-form">
             <input type="text" id="uid" name="uid" placeholder="Enter UID" required>
             <input type="text" id="server_name" name="server_name" placeholder="Server Name (IND, US, BR...)">
-            <button type="submit">Send Likes</button>
+            <button type="submit"><span>Send Likes</span></button>
         </form>
 
-        <div id="result" class="result-card" style="display:none;"></div>
+        <div id="result" class="result-card"></div>
     </main>
     <footer>
         <p>Made by <a href="https://www.youtube.com/@Creator.9XED" target="_blank">Creator.9XED</a></p>
@@ -64,12 +108,30 @@ body::before {
 const form = document.getElementById("likeForm");
 const resultDiv = document.getElementById("result");
 
+// Function to create confetti particles
+function createConfetti(count=30){
+    for(let i=0;i<count;i++){
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random()*100 + 'vw';
+        confetti.style.background = `hsl(${Math.random()*360},80%,60%)`;
+        confetti.style.animationDuration = 2 + Math.random()*1.5 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(()=>{ confetti.remove(); }, 3000);
+    }
+}
+
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const uid = document.getElementById("uid").value;
     const server_name = document.getElementById("server_name").value;
     let url = `/like?uid=${uid}`;
     if (server_name) url += `&server_name=${server_name}`;
+
+    // Animate form out
+    form.style.transition = 'all 0.7s ease-in-out';
+    form.style.transform = 'translateY(-50px) scale(0.9)';
+    form.style.opacity = '0';
 
     resultDiv.style.display = "block";
     resultDiv.innerHTML = "Processing...";
@@ -89,8 +151,19 @@ form.addEventListener("submit", async (e) => {
                       `UID: ${data.UID}`;
         }
         resultDiv.innerHTML = content;
+
+        // Animate result card in
+        setTimeout(()=>{
+            resultDiv.style.opacity = '1';
+            resultDiv.style.transform = 'scale(1)';
+        }, 300);
+
+        // Fire confetti
+        createConfetti(50);
+
     } catch (err) {
         resultDiv.innerHTML = "❌ Error: " + err.message;
+        createConfetti(20);
     }
 });
 </script>
