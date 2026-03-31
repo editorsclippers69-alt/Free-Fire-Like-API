@@ -42,15 +42,15 @@ header p { text-align:center; color:#a0dfff; margin-bottom:30px; font-weight:600
 .like-form button { 
     position: relative; display:inline-block;
     width:100%; padding:15px; border:none; border-radius:15px; 
-    background: rgba(255,255,255,0.1); color:white; font-size:16px; cursor:pointer; 
-    overflow:hidden; backdrop-filter: blur(15px); transition: 0.3s ease; font-weight:600;
+    background: rgba(255,255,255,0.1); color:White; font-size:16px; cursor:pointer; 
+    overflow:hidden; backdrop-filter: blur(15px); transition: 0.9s ease; font-weight:600;
 }
 .like-form button::before {
     content: '';
     position: absolute; top:0; left:-100%; width:60%; height:100%;
     background: rgba(255,255,255,0.25);
-    transform: skewX(-20deg);
-    transition: left 1.5s ease;
+    transform: skewX(20deg);
+    transition: left 0.8s ease;
 }
 .like-form button:hover::before { left: 140%; }
 .like-form button span { position: relative; z-index: 1; }
@@ -71,8 +71,8 @@ footer a { color:#00d0ff; text-decoration:none; }
 /* Confetti Particles */
 .confetti {
     position:fixed; top:0; left:50%; width:10px; height:10px;
-    background: #00d0ff; opacity:0.9; pointer-events:none; z-index:10;
-    animation:fall 2s linear forwards;
+    background: #00d0ff; opacity:100; pointer-events:none; z-index:10;
+    animation:fall 4s linear forwards;
 }
 @keyframes fall {
     0% { transform: translateY(0) rotate(0deg); opacity:1; }
@@ -92,7 +92,7 @@ footer a { color:#00d0ff; text-decoration:none; }
     </header>
     <main>
         <form id="likeForm" class="like-form">
-            <input type="text" id="uid" name="uid" placeholder="Enter UID" required>
+            <input type="text" id="uid" name="uid" placeholder="Enter Free fire UID" required>
             <input type="text" id="server_name" name="server_name" placeholder="Server Name (IND, US, BR...)">
             <button type="submit"><span>Send Likes</span></button>
         </form>
@@ -129,8 +129,8 @@ form.addEventListener("submit", async (e) => {
     if (server_name) url += `&server_name=${server_name}`;
 
     // Animate form out
-    form.style.transition = 'all 0.7s ease-in-out';
-    form.style.transform = 'translateY(-50px) scale(0.9)';
+    form.style.transition = 'all 0.4s ease-in-out';
+    form.style.transform = 'translateY(0px) scale(0)';
     form.style.opacity = '0';
 
     resultDiv.style.display = "block";
